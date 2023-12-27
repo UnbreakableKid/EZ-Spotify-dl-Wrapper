@@ -1,3 +1,5 @@
 {
-    "defaultPlaylist": "https://open.spotify.com/album/6vDiMhyfSnTn18OY99BSQX?si=hgeejVq4Sea6ad249jKs5Q"
+    "defaultPlaylist": "https://open.spotify.com/playlist/0KbW75Oql65YrmXvvjZMo7?si=c8f7e47d62194a62",
+    "outputDrive": "DRIVENAME",
+    "outputPath": "FOLDERPATH"
 }

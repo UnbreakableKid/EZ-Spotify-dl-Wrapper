@@ -19,11 +19,31 @@ if ($null -eq $arg -or $arg -eq "") {
     }
 }
 
-# Get the path to the desktop
-$desktopPath = [Environment]::GetFolderPath("Desktop")
+# Read the config.json file and convert it to a PowerShell object
+$config = Get-Content -Path "./config.json" | ConvertFrom-Json
 
-# Define the output folder path
-$outputFolderPath = Join-Path -Path $desktopPath -ChildPath "output"
+
+# Check if outputDrive and outputPath exist in the config
+if ($null -ne $config.outputDrive -and $null -ne $config.outputPath) {
+    # Get the drive path by its name
+    $drive = Get-WmiObject -Class Win32_Volume | Where-Object { $_.Label -eq $config.outputDrive }
+
+    if ($null -ne $drive) {
+        # Define the output folder path using drive path and outputPath
+        $outputFolderPath = Join-Path -Path $drive.Name -ChildPath $config.outputPath
+    }
+    else {
+        Write-Output "Drive not found"
+        return
+    }
+}
+else {
+    # Get the path to the desktop
+    $desktopPath = [Environment]::GetFolderPath("Desktop")
+
+    # Define the output folder path
+    $outputFolderPath = Join-Path -Path $desktopPath -ChildPath "output"
+}
 
 # Check if the output folder exists
 if (Test-Path -Path $outputFolderPath) {
@@ -32,7 +52,7 @@ if (Test-Path -Path $outputFolderPath) {
 }
 else {
     # Create the output folder
-    New-Item -Path $outputFolderPath -ItemType Directory | Out-Null
+    New-Item -Path $outputFolderPath -ItemType Directory
 }
 
 # Check if ffmpeg is installed and in the system's PATH
